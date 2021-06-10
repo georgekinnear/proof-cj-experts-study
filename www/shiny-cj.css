@@ -1,0 +1,8 @@
+body { padding-top: 70px; }
+.comparison-image {
+	width: 100%;
+    border: 1px solid #ccc;
+    margin-top: 1em;
+    box-shadow: 3px 4px 15px 0px #0000002b;
+	padding: 2em 1em;
+}
