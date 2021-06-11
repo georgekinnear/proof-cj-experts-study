@@ -4,13 +4,14 @@ library(shinyjs)
 library(pool)
 library(yaml)
 
-# TODO - move the connection info to config.yml for security
+# Connection info is stored in dbconfig.yml (not in public repo) for security
+dbconfig <- yaml::read_yaml("dbconfig.yml")
 pool <- dbPool(
   drv = RMySQL::MySQL(),
-  dbname = "hsn_shiny",
-  host = "hsn.uk.net",
-  username = "hsn_shiny",
-  password = "ShinyApp20210404"
+  dbname = dbconfig$dbname,
+  host = dbconfig$host,
+  username = dbconfig$username,
+  password = dbconfig$password
 )
 onStop(function() {
   poolClose(pool)
