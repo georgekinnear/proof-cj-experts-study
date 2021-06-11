@@ -22,11 +22,6 @@ onStop(function() {
 #
 # - target_judges is the number of judges we seek in each group
 # - min_per_judge is the number of judgements needed for a judge to count toward the number of judges
-# studies <- read_csv("study-prompts.csv") %>% 
-#   mutate(
-#     target_judges = 25,
-#     min_per_judge = 10
-#   )
 studies <- pool %>% 
   tbl("studies") %>% 
   filter(str_detect(study, "experts_|phd_|other_")) %>% 
@@ -360,29 +355,140 @@ server <- function(input, output, session) {
   # Judging
   #
   
-  # Set up pairs for judging - this is done at the start of the session
-  # Produce pairs by sliding along a randomly shuffled list of the items,
-  # i.e. moving from one pair to the next, one of the items stays on
-  pairs <- sample_n(tibble(left = proofs$item_num), 100, replace = TRUE) %>% 
-    # Avoid showing AA, or AB followed by BA
-    filter(left != lead(left)) %>% 
-    filter(left != lead(left)) %>% 
-    filter(left != lead(left, n = 2)) %>% 
-    filter(left != lead(left, n = 2)) %>% 
-    mutate(right = lead(left)) %>% 
-    drop_na() %>%
-    mutate(pair_num = row_number(), .before = 1) %>% 
-    mutate(comparisons = 0)
+  make_pairs <- function(num_pairs = 20) {
+    
+    # 1. Gather data on which judgements have been made already in this study group
+
+    # all comparisons from this study
+    judgement_data <- pool %>% 
+      tbl("judgements") %>% 
+      filter(study == !!session_info$study_id) %>% 
+      select(-contains("_comment")) %>% 
+      collect() %>% 
+      mutate(across(c("left", "right", "won", "lost"), as.integer))
+
+    # count the number of comparisons for each pair
+    pairs_judged <- judgement_data %>%
+      rowwise() %>%
+      mutate(pair = paste(sort(c(won, lost)), collapse = '_')) %>% 
+      select(pair, judge_id) %>% 
+      group_by(pair) %>% 
+      tally() %>% 
+      arrange(-n) %>% 
+      separate(pair, c("s1", "s2"), "_") %>% 
+      mutate(across(c("s1", "s2"), as.integer))
+    
+    # systematically list all pairs, and add the counts for each
+    all_pairs_status <-
+      crossing(proofs %>% select(s1 = item_num),
+               proofs %>% select(s2 = item_num)) %>%
+      filter(s1 < s2) %>%
+      left_join(pairs_judged, by = c("s1", "s2")) %>%
+      mutate(n = replace_na(n, 0))
+    
+    # count the number of times each individual script has been judged
+    scripts_judged <- judgement_data %>%
+      pivot_longer(cols = c(won, lost),
+                   names_to = "position",
+                   values_to = "script") %>%
+      group_by(script) %>%
+      tally()
+    judgements_per_script <- scripts_judged %>% deframe()
+    
+    # 2. Start off with the least judged script so far
+    script_seq <- list()
+    # choose the first script to be one of the least judged so far
+    script_seq[[1]] <-
+      scripts_judged %>%
+      filter(n == min(n)) %>%
+      sample_n(size = 1) %>%
+      select(script) %>% deframe()
+    
+    # 3. Find successive pairings
+    for (i in c(2:(num_pairs*2 + 1))) {
+      player <- script_seq[[i - 1]]
+      # choose one of the pairs featuring this script_id that have the least judgements so far
+      pair <- pairs_judged %>%
+        filter(s1 == player | s2 == player) %>%
+        filter(n == min(n)) %>%
+        # extract the opponent
+        mutate(script = if_else(s1 == player, s2, s1)) %>% 
+        # attach information about how frequently the opponents have been judged
+        left_join(
+          judgements_per_script %>%
+            enframe(value = "comparisons") %>%
+            mutate_all(as.integer) %>%
+            mutate(weight = max(comparisons) + 1 - comparisons),
+          by = c("script" = "name")
+        ) %>%
+        # sample the opponent at random, but weighted by the number of comparisons,
+        # so we're more likely to pair with an opponent that has not been paired with this script so far
+        sample_n(size = 1, weight = weight)
+      opponent <- pair$script
+      script_seq[[i]] <- opponent
+      # record this pair on the tally, incrementing the count by 100 so this judge does not see it for a long time!
+      pairs_judged <- pairs_judged %>%
+        mutate(n = case_when(s1 == player & s2 == opponent ~ n + 100L,
+                             s2 == player & s1 == opponent ~ n + 100L,
+                             TRUE ~ n))
+      # also record it as a judgement on the per_script tally
+      judgements_per_script[[opponent]] <- judgements_per_script[[opponent]] + 1
+    }
+    
+    # 4. Return the pairings as a dataframe
+    return(
+      script_seq %>% enframe() %>%
+        # set up the left and right scripts
+        mutate(left = as.integer(value)) %>%
+        mutate(right = lead(left)) %>%
+        select(left, right) %>%
+        # we discard every 2nd pair, otherwise we have "right-hand script stays on"
+        filter(row_number() %% 2 == 1) %>% 
+        # return only the desired number of pairings (chop of the last one that has right = NA)
+        slice_head(n = num_pairs) %>%
+        mutate(pair_num = row_number(), .before = 1)
+    )
+  }
+  next_pair = function(old_pair_num) {
+    print("next_pair")
+    print(old_pair_num)
+    print(nrow(pairs))
+    # move on to the next pair
+    pair_to_return = old_pair_num + 1
+    
+    # if we've reached the end, add 10 more pairs to the list
+    if(pair_to_return > nrow(pairs)) {
+      pairs <<- pairs %>% bind_rows(make_pairs(num_pairs = 10) %>% mutate(pair_num = pair_num + old_pair_num))
+      pair$pairs_available <- nrow(pairs)
+      print(pairs)
+    }
+    pairs %>% 
+      filter(pair_num == pair_to_return) %>%
+      head(1)
+  }
   
-  first_pair = pairs %>% head(1)
+  # initialise empty data structures, to be used when judging begins
   pair <- reactiveValues(
-    pair_num = first_pair$pair_num,
-    left = first_pair$left,
-    right = first_pair$right
+    pair_num = 0,
+    pairs_available = 0,
+    left = 1000,
+    right = 1001
   )
+  pairs <- tibble()
   
   observeEvent(input$step3submit, {
-    #proofs <- pool %>% tbl("proofs") %>% collect() %>% mutate(proof = as.character(proof))
+    
+    pairs <<- make_pairs(num_pairs = 20)
+    print(pairs)
+    pair$pairs_available <- nrow(pairs)
+  
+    first_pair = pairs %>% head(1)
+    pair$pair_num <- first_pair$pair_num
+    pair$left <- first_pair$left
+    pair$right <- first_pair$right
+
+    print(pair)
+    print("OK")
 
     # update the page content
     output$pageContent <- renderUI({
@@ -448,15 +554,9 @@ server <- function(input, output, session) {
     )
   })
   
-  next_pair = function(old_pair_num) {
-    pair_to_return = ifelse(old_pair_num < nrow(pairs), old_pair_num + 1, 1)
-    pairs %>% 
-      filter(pair_num == pair_to_return) %>%
-      head(1)
-  }
   update_pair <- function() {
     new_pair <- next_pair(pair$pair_num)
-    #print(paste("update pair to ", new_pair))
+    print(new_pair)
     pair$pair_num <- new_pair$pair_num
     pair$left <- new_pair$left
     pair$right <- new_pair$right
@@ -464,7 +564,7 @@ server <- function(input, output, session) {
   }
   
   record_judgement <- function(pair, winner = "left", loser = "right") {
-    #print(pair)
+    print(pair)
     start_time <- pair$start_time
     current_time <- Sys.time()
     #print(start_time)
@@ -497,7 +597,6 @@ server <- function(input, output, session) {
     update_pair()
   })
   observeEvent(input$chooseRight, {
-    print(input$chooseLeft_comment)
     record_judgement(pair, winner = "right", loser = "left")
     update_pair()
   })
