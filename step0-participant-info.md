@@ -4,49 +4,49 @@ You are being invited to take part in research to investigate experts' views of 
 
 This study is being run by Prof Chris Sangwin and Dr George Kinnear, from the School of Mathematics at the University of Edinburgh.
 
-### What is the purpose of the study?
+* **What is the purpose of the study?**
 
-To better understand what characteristics expert mathematicians value when considering the relative merits of different mathematical proofs.
+  To better understand what characteristics expert mathematicians value when considering the relative merits of different mathematical proofs.
 
-### Why have I been invited to take part?
+* **Why have I been invited to take part?**
 
-You are invited to participate in this study because you are an expert mathematician.
+  You are invited to participate in this study because you are an expert mathematician.
 
-### Do I have to take part?
+* **Do I have to take part?**
 
-No – it is entirely up to you. If you do decide to take part, please keep a copy of this Information Sheet and complete the Informed Consent to show that you understand your rights in relation to the research, and that you are happy to participate. If you do decide to take part you are still free to withdraw at any time without giving a reason. Please contact the lead researcher if you seek to withdraw from the study at a later date.
+  No – it is entirely up to you. If you do decide to take part, please keep a copy of this Information Sheet and complete the Informed Consent to show that you understand your rights in relation to the research, and that you are happy to participate. If you do decide to take part you are still free to withdraw at any time without giving a reason. Please contact the lead researcher if you seek to withdraw from the study at a later date.
 
-### What will happen if I decide to take part? 
+* **What will happen if I decide to take part?**
 
-You will be asked to conduct a series of paired comparisons of mathematical proofs. In each comparison you will be asked to read two proofs of a given theorem in mathematics and to choose one.
+  You will be asked to conduct a series of paired comparisons of mathematical proofs. In each comparison you will be asked to read two proofs of a given theorem in mathematics and to choose one.
 
-### What are the possible benefits of taking part?
+* **What are the possible benefits of taking part?**
 
-By taking part you will be helping the research team better understand what experts value in mathematical proof.  We anticipate this will enable us, and others, to improve the design mathematics teaching in future.
+  By taking part you will be helping the research team better understand what experts value in mathematical proof.  We anticipate this will enable us, and others, to improve the design mathematics teaching in future.
 
-### Are there any risks associated with taking part?
+* **Are there any risks associated with taking part?**
 
-There are no significant risks associated with participation.
+  There are no significant risks associated with participation.
 
-### What if I want to withdraw from the study?
+* **What if I want to withdraw from the study?**
 
-Agreeing to participate in this project does not oblige you to remain in the study nor have any further obligation to this study. If, at any stage, you no longer want to be part of the study, please inform the lead researcher, Prof. Christopher Sangwin (C.J.Sangwin@ed.ac.uk). You should note that your data may be used in the production of formal research outputs (e.g. journal articles and conference papers) prior to your withdrawal and so you are advised to contact the research team at the earliest opportunity should you wish to withdraw from the study. On specific request we will destroy all your identifiable answers, but we will need to use the data collected prior to your withdrawal, and to maintain our records of your consenting participation.
+  Agreeing to participate in this project does not oblige you to remain in the study nor have any further obligation to this study. If, at any stage, you no longer want to be part of the study, please inform the lead researcher, Prof. Christopher Sangwin (C.J.Sangwin@ed.ac.uk). You should note that your data may be used in the production of formal research outputs (e.g. journal articles and conference papers) prior to your withdrawal and so you are advised to contact the research team at the earliest opportunity should you wish to withdraw from the study. On specific request we will destroy all your identifiable answers, but we will need to use the data collected prior to your withdrawal, and to maintain our records of your consenting participation.
+
+* **What will happen with the results of this study?**
+
+  The results of this study may be summarised in published articles, reports and presentations. Quotes or key findings will always be made anonymous in any formal outputs unless we have your prior and explicit written permission to attribute them to you by name. Information may also be kept for future research.
+
+* **Who can I contact?**
+
+  If you have any further questions about the study, please contact Prof. Christopher Sangwin (C.J.Sangwin@ed.ac.uk).
+
+  If you wish to make a complaint about the study, please contact Professor Ivan Cheltsov (Director of Research, School of Mathematics, I.Cheltsov@ed.ac.uk).  In your communication, please provide the study title ("Investigating insight and rigour in mathematical proof") and detail the nature of your complaint.
 
 ### Data Protection and Confidentiality
 
 Your data will be processed in accordance with Data Protection Law.  All information collected about you will be kept strictly confidential. We will anonymise all data before carrying out any analysis. The anonymised data will be made available on the OSF website (osf.io) for possible further research.
 
-### What will happen with the results of this study?
-
-The results of this study may be summarised in published articles, reports and presentations. Quotes or key findings will always be made anonymous in any formal outputs unless we have your prior and explicit written permission to attribute them to you by name. Information may also be kept for future research.
-
-### Who can I contact?
-
-If you have any further questions about the study, please contact Prof. Christopher Sangwin (C.J.Sangwin@ed.ac.uk).
-
-If you wish to make a complaint about the study, please contact Professor Ivan Cheltsov (Director of Research, School of Mathematics, I.Cheltsov@ed.ac.uk).  In your communication, please provide the study title ("Investigating insight and rigour in mathematical proof") and detail the nature of your complaint.
-
-### For general information about how we use your data go to:
+For general information about how we use your data go to:
 
 https://www.ed.ac.uk/records-management/privacy-notice-research
 

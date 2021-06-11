@@ -110,6 +110,7 @@ ui <- fluidPage(
       /*.navbar-nav {float: left; margin: 5px; }*/
       .navbar-text {float:left; margin-left:15px; }
       .navbar-right {float:right; margin-right:15px; }
+      div#pageContent { margin-bottom: 2em; }
       #demographics .shiny-input-container { width: auto; clear: both; }
       #demographics .shiny-options-group { display: block; float: left; }
       #demographics .control-label { float: left; width: 12em; text-align: right; margin-right: 1em; }
