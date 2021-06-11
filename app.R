@@ -37,6 +37,7 @@ studies <- pool %>%
 #
 all_existing_judgements <- pool %>% 
   tbl("judgements") %>% 
+  select(-contains("_comment")) %>% 
   collect() %>% 
   semi_join(studies, by = "study")
 
@@ -116,6 +117,7 @@ ui <- fluidPage(
       #demographics .control-label { float: left; width: 12em; text-align: right; margin-right: 1em; }
       div.item_panel { padding: 1em 2em; border: 1px solid #ccc; box-shadow: 3px 4px 15px 0px #0000002b; overflow: auto;}
       div.item_content {margin-top: 1em; }
+      #chooseLeft_comment-label, #chooseRight_comment-label { color: #999; font-weight: normal; font-style: italic; margin-top: 1em; }
       .comparison-image { width: 100%; }
     "))
   ),
@@ -395,7 +397,7 @@ server <- function(input, output, session) {
     })
     
     pair$start_time = Sys.time()
-    print("Judging intialised")
+    print("Judging initialised")
     #print(pair)
   })
   
@@ -413,7 +415,10 @@ server <- function(input, output, session) {
           fluidRow(
             actionButton(button_id, "Choose this one", class = "btn-block btn-primary")
           ),
-          div(class = "item_content", display_item(item_id))
+          div(class = "item_content", display_item(item_id)),
+          fluidRow(
+            textAreaInput(paste0(button_id, "_comment"), label = "Comments (optional)", width = "100%", height = "4em")
+          )
       )
     )
   }
@@ -479,7 +484,9 @@ server <- function(input, output, session) {
         right = pair$right,
         won = winning_item,
         lost = losing_item,
-        time_taken = time_taken
+        time_taken = time_taken,
+        left_comment = input$chooseLeft_comment,
+        right_comment = input$chooseRight_comment
       ),
       row.names = FALSE,
       append = TRUE
@@ -490,6 +497,7 @@ server <- function(input, output, session) {
     update_pair()
   })
   observeEvent(input$chooseRight, {
+    print(input$chooseLeft_comment)
     record_judgement(pair, winner = "right", loser = "left")
     update_pair()
   })
