@@ -1,6 +1,8 @@
 ## Participant information
 
-You are being invited to take part in research to investigate experts' views of mathematical proof. We need to ask your permission to include your responses in published research. Before you decide to take part it is important you understand why the research is being conducted and what it will involve. Please take time to read the following information carefully.
+You are being invited to take part in research to investigate experts' views of mathematical proof.
+
+We need to ask your permission to include your responses in published research. Before you decide to take part it is important you understand why the research is being conducted and what it will involve. Please take time to read the following information carefully.
 
 This study is being run by Prof Chris Sangwin and Dr George Kinnear, from the School of Mathematics at the University of Edinburgh.
 
@@ -14,7 +16,7 @@ This study is being run by Prof Chris Sangwin and Dr George Kinnear, from the Sc
 
 * **Do I have to take part?**
 
-  No – it is entirely up to you. If you do decide to take part, please keep a copy of this Information Sheet and complete the Informed Consent to show that you understand your rights in relation to the research, and that you are happy to participate. If you do decide to take part you are still free to withdraw at any time without giving a reason. Please contact the lead researcher if you seek to withdraw from the study at a later date.
+  No – it is entirely up to you. If you do decide to take part, please keep a copy of this Information Sheet and complete the Informed Consent to show that you understand your rights in relation to the research, and that you are happy to participate.
 
 * **What will happen if I decide to take part?**
 
@@ -30,7 +32,7 @@ This study is being run by Prof Chris Sangwin and Dr George Kinnear, from the Sc
 
 * **What if I want to withdraw from the study?**
 
-  Agreeing to participate in this project does not oblige you to remain in the study nor have any further obligation to this study. If, at any stage, you no longer want to be part of the study, please inform the lead researcher, Prof. Christopher Sangwin (C.J.Sangwin@ed.ac.uk). You should note that your data may be used in the production of formal research outputs (e.g. journal articles and conference papers) prior to your withdrawal and so you are advised to contact the research team at the earliest opportunity should you wish to withdraw from the study. On specific request we will destroy all your identifiable answers, but we will need to use the data collected prior to your withdrawal, and to maintain our records of your consenting participation.
+  We do not collect any personally identifiable information, so it is not possible for us to identify responses from an individual participant. This means it is not possible for you to withdraw from the study after you have submitted your answers. 
 
 * **What will happen with the results of this study?**
 
@@ -40,14 +42,11 @@ This study is being run by Prof Chris Sangwin and Dr George Kinnear, from the Sc
 
   If you have any further questions about the study, please contact Prof. Christopher Sangwin (C.J.Sangwin@ed.ac.uk).
 
-  If you wish to make a complaint about the study, please contact Professor Ivan Cheltsov (Director of Research, School of Mathematics, I.Cheltsov@ed.ac.uk).  In your communication, please provide the study title ("Investigating insight and rigour in mathematical proof") and detail the nature of your complaint.
+  If you wish to make a complaint about the study, please contact Professor Ivan Cheltsov (Director of Research, School of Mathematics, I.Cheltsov@ed.ac.uk).  In your communication, please provide the study title ("Experts' views of mathematical proof") and detail the nature of your complaint.
 
 ### Data Protection and Confidentiality
 
 Your data will be processed in accordance with Data Protection Law.  All information collected about you will be kept strictly confidential. We will anonymise all data before carrying out any analysis. The anonymised data will be made available on the OSF website (osf.io) for possible further research.
-
-For general information about how we use your data go to:
-
-https://www.ed.ac.uk/records-management/privacy-notice-research
+For general information about how we use your data go to: https://www.ed.ac.uk/records-management/privacy-notice-research
 
 
