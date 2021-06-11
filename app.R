@@ -387,12 +387,17 @@ server <- function(input, output, session) {
       mutate(n = replace_na(n, 0))
     
     # count the number of times each individual script has been judged
-    scripts_judged <- judgement_data %>%
-      pivot_longer(cols = c(won, lost),
-                   names_to = "position",
-                   values_to = "script") %>%
-      group_by(script) %>%
-      tally()
+    scripts_judged <- proofs %>% select(script = item_num) %>% 
+      left_join(
+        judgement_data %>%
+        pivot_longer(cols = c(won, lost),
+                     names_to = "position",
+                     values_to = "script") %>%
+        group_by(script) %>%
+        tally(),
+        by = "script"
+      ) %>%
+      mutate(n = replace_na(n, 0))
     judgements_per_script <- scripts_judged %>% deframe()
     
     # 2. Start off with the least judged script so far
@@ -408,7 +413,7 @@ server <- function(input, output, session) {
     for (i in c(2:(num_pairs*2 + 1))) {
       player <- script_seq[[i - 1]]
       # choose one of the pairs featuring this script_id that have the least judgements so far
-      pair <- pairs_judged %>%
+      pair <- all_pairs_status %>%
         filter(s1 == player | s2 == player) %>%
         filter(n == min(n)) %>%
         # extract the opponent
