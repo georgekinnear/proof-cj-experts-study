@@ -29,7 +29,7 @@ onStop(function() {
 #   )
 studies <- pool %>% 
   tbl("studies") %>% 
-  filter(str_detect(study, "experts_")) %>% 
+  filter(str_detect(study, "experts_|phd_|other_")) %>% 
   collect()
 
 #
@@ -55,9 +55,10 @@ study_status <- studies %>%
   left_join(study_progress, by = "study") %>% 
   mutate(across(starts_with("num_"), ~replace_na(.x, 0)))
 
-assign_to_study <- function() {
+assign_to_study <- function(study_group) {
   # allocate to one of the studies, weighted by current progress
   study_status %>%
+    filter(str_detect(study, study_group)) %>% 
     # mutate(num_judges = c(1, 25, 25, 25, 25)) %>% #simulate unbalanced completion
     # identify the number of judges needed by each study to meet its target
     mutate(judge_slots = target_judges - num_judges) %>%
@@ -70,11 +71,17 @@ assign_to_study <- function() {
 }
 
 # Check that the assignment is working the way it should
-# assignments_test <- tibble(iter = c(1:100)) %>%
-#   mutate(study = map_chr(iter, ~ assign_to_study()[["study"]]))
-# assignments_test %>% 
-#   group_by(study) %>% 
-#   tally()
+# simulate_assignment <- function(study_group) {
+#   assigned_to <- assign_to_study(study_group)[["study"]]
+#   study_status <<- study_status %>% 
+#     mutate(num_judges = case_when(study == assigned_to ~ num_judges + 1, TRUE ~ num_judges))
+#   return(assigned_to)
+# }
+# assignments_test <- tibble(iter = c(1:1)) %>%
+#   mutate(study = map_chr(iter, ~ simulate_assignment("phd")))
+# study_status %>% 
+#   filter(str_detect(study, "phd")) %>% 
+#   select(study, num_judges)
 
 proofs <- read_yaml("proofs.yml") %>%
   purrr::map(as_tibble_row) %>%
@@ -196,34 +203,7 @@ server <- function(input, output, session) {
   # Page 1 - demographic survey
   #
   observeEvent(input$consentButton, {
-    # Now they have consented, assign them to a condition and set up session_info
-    assigned_study <<- assign_to_study()
-    
-    # Create session_info and synch with the judges table in the database
-    ## 1. Write session info to the database
-    session_info <<- tibble(
-      shiny_info = session$token,
-      shiny_timestamp = as.character(Sys.time()),
-      study_id = assigned_study[["study"]],
-      judge_group = judge_group
-    )
-    dbWriteTable(pool,
-                 "judges",
-                 session_info,
-                 row.names = FALSE,
-                 append = TRUE)
-    
-    ## 2. Update session_info to include the autoincremented judge_id produced by the database
-    session_info <<- pool %>% tbl("judges") %>%
-      filter(shiny_info == !!session_info$shiny_info) %>%
-      arrange(-judge_id) %>%
-      collect() %>%
-      slice(1)
-    
-    ## 3. Pick out the judge_id for ease of reference later on
-    judge_id <<- session_info$judge_id
-    print(judge_id)
-    
+
     # Set up the UI
     
     ## update the nav
@@ -240,7 +220,8 @@ server <- function(input, output, session) {
                        selected = character(0), # none selected initially https://stackoverflow.com/q/39535980
                        c("Research student" = "phd",
                          "Post-doctoral researcher" = "postdoc",
-                         "Faculty (lecturer/professor)" = "faculty")),
+                         "Faculty (lecturer/professor)" = "faculty",
+                         "Other" = "other")),
           radioButtons("demo_field", "Your research area",
                        selected = character(0),
                        c("Applied mathematics" = "applied",
@@ -280,15 +261,41 @@ server <- function(input, output, session) {
   # Page 2 - definition prompt
   #
   observeEvent(input$step1submit, {
-    # save the values input on Page 1
-    conn <- poolCheckout(pool)
-    query <- glue::glue_sql("UPDATE `judges` SET
-                          `demo_level` = {input$demo_level},
-                          `demo_field` = {input$demo_field}
-                          WHERE `judge_id` = {session_info$judge_id}
-                          ", .con = conn)
-    dbExecute(conn, sqlInterpolate(DBI::ANSI(), query))
-    poolReturn(conn)
+    
+    # Now they have consented, assign them to a condition matching their selected demographic
+    study_group <- case_when(
+      input$demo_level %in% c("postdoc", "faculty") ~ "experts_",
+      input$demo_level == "phd" ~ "phd_",
+      TRUE ~ "other_"
+    )
+    assigned_study <<- assign_to_study(study_group)
+    
+    # Create session_info and synch with the judges table in the database
+    ## 1. Write session info to the database
+    session_info <<- tibble(
+      shiny_info = session$token,
+      shiny_timestamp = as.character(Sys.time()),
+      study_id = assigned_study[["study"]],
+      judge_group = judge_group,
+      demo_level = input$demo_level,
+      demo_field = input$demo_field
+    )
+    dbWriteTable(pool,
+                 "judges",
+                 session_info,
+                 row.names = FALSE,
+                 append = TRUE)
+    
+    ## 2. Update session_info to include the autoincremented judge_id produced by the database
+    session_info <<- pool %>% tbl("judges") %>%
+      filter(shiny_info == !!session_info$shiny_info) %>%
+      arrange(-judge_id) %>%
+      collect() %>%
+      slice(1)
+    
+    ## 3. Pick out the judge_id for ease of reference later on
+    judge_id <<- session_info$judge_id
+    print(judge_id)
     
     # update the nav
     shinyjs::addClass(id = "tab1", class = "disabled")
