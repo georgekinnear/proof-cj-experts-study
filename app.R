@@ -216,7 +216,7 @@ server <- function(input, output, session) {
         div(id = "demographics",
           radioButtons("demo_level", "Your current role",
                        selected = character(0), # none selected initially https://stackoverflow.com/q/39535980
-                       c("Research student" = "phd",
+                       c("PhD student" = "phd",
                          "Post-doctoral researcher" = "postdoc",
                          "Faculty (lecturer/professor)" = "faculty",
                          "Other" = "other")),
