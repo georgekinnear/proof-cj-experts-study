@@ -321,12 +321,21 @@ server <- function(input, output, session) {
   observeEvent(input$step2submit, {
     # save the values input on Page 2
     conn <- poolCheckout(pool)
-    query <- glue::glue_sql("UPDATE `judges` SET
-                          `definition` = {input$definition}
-                          WHERE `judge_id` = {session_info$judge_id}
-                          ", .con = conn)
-    #print(query)
-    dbExecute(conn, sqlInterpolate(DBI::ANSI(), query))
+    # query <- glue::glue_sql("UPDATE `judges` SET
+    #                       `definition` = {input$definition}
+    #                       WHERE `judge_id` = {session_info$judge_id}
+    #                       ", .con = conn)
+    query <- sqlInterpolate(
+      conn,
+      "UPDATE `judges` SET
+      `definition` = ?definition
+      WHERE `judge_id` = ?judge_id",
+      definition = input$definition,
+      judge_id = session_info$judge_id
+    )
+    print(query)
+    #dbExecute(conn, sqlInterpolate(DBI::ANSI(), query))
+    dbExecute(conn, query)
     poolReturn(conn)
     
     # update the nav
