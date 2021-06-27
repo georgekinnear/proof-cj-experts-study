@@ -227,6 +227,12 @@ server <- function(input, output, session) {
                          "Statistics" = "stats"))
         ),
         div("", class = "clearfix"),
+        HTML(markdown::markdownToHTML(
+          text = "Note: the rest of this survey should take around **15 minutes** to complete,
+          and must be completed in a **single session** - if you close the browser window
+          or leave it idle for more than 10 minutes, you will not be able to pick up from where you left off.",
+          fragment.only = TRUE
+        )),
         #actionButton("step1submit", "Submit", class = "btn-success")
         fluidRow(
           column(4, offset = 4,
@@ -325,6 +331,7 @@ server <- function(input, output, session) {
     #                       `definition` = {input$definition}
     #                       WHERE `judge_id` = {session_info$judge_id}
     #                       ", .con = conn)
+    # https://shiny.rstudio.com/articles/sql-injections.html
     query <- sqlInterpolate(
       conn,
       "UPDATE `judges` SET
