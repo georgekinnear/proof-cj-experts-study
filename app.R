@@ -228,8 +228,8 @@ server <- function(input, output, session) {
         ),
         div("", class = "clearfix"),
         HTML(markdown::markdownToHTML(
-          text = "Note: the rest of this survey should take around **15 minutes** to complete,
-          and must be completed in a **single session** - if you close the browser window
+          text = "Note: the rest of this survey should take around **15 minutes** to complete.
+          \n\n For technical reasons, it must be completed in a **single session** - if you close the browser window
           or leave it idle for more than 10 minutes, you will not be able to pick up from where you left off.",
           fragment.only = TRUE
         )),
