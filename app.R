@@ -602,6 +602,7 @@ server <- function(input, output, session) {
       p("When you are ready to stop, please simply close this browser window."),
       p("If you would like to receive an update about the results of the study, please complete this separate form:"),
       p(a("https://edinburgh.onlinesurveys.ac.uk/expert-opinions-about-proofs",
+          target="_blank",
           href="https://edinburgh.onlinesurveys.ac.uk/expert-opinions-about-proofs"), style = "text-align: center;"),
       p("Thank you for taking part."),
       easyClose = TRUE
